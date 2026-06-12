@@ -220,7 +220,7 @@ def call_gemini(prompt):
             GEMINI_URL,
             headers={'Content-Type': 'application/json', 'X-goog-api-key': GEMINI_API_KEY},
             json={'contents': [{'parts': [{'text': prompt}]}]},
-            timeout=30
+            timeout=25
         )
         if res.status_code == 200:
             return res.json()['candidates'][0]['content']['parts'][0]['text']
@@ -241,7 +241,7 @@ def call_llm(prompt):
                     'messages': [{'role': 'user', 'content': prompt}],
                     'temperature': 0.7,
                 },
-                timeout=30
+                timeout=25
             )
             if res.status_code == 200:
                 return res.json()['choices'][0]['message']['content']
@@ -273,7 +273,7 @@ def fetch_live_gw(location, start=None, end=None, size=20):
                 'Origin': 'https://indiawris.gov.in', 'Referer': 'https://indiawris.gov.in/'
             }
         )
-        res = session.send(req.prepare(), timeout=6)
+        res = session.send(req.prepare(), timeout=5)
         print(f'WRIS GW STATUS: {res.status_code}')
         if res.status_code == 200:
             data = res.json()
@@ -291,7 +291,7 @@ def fetch_weather(location, state='Tamil Nadu'):
         forecast_res = http_requests.get(
             f"{WEATHER_URL}/forecast.json",
             params={'key': WEATHER_API_KEY, 'q': loc, 'days': 7, 'aqi': 'no'},
-            timeout=10
+            timeout=8
         )
         result = {}
         if forecast_res.status_code == 200:
@@ -461,7 +461,7 @@ def fetch_live_rainfall(district, start=None, end=None, size=20):
                 'accept': 'application/json', 'User-Agent': 'Mozilla/5.0',
                 'Origin': 'https://indiawris.gov.in', 'Referer': 'https://indiawris.gov.in/'
             },
-            timeout=6
+            timeout=5
         )
         print(f'WRIS RAINFALL STATUS: {res.status_code}')
         if res.status_code == 200:
