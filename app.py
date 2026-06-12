@@ -273,14 +273,14 @@ def fetch_live_gw(location, start=None, end=None, size=20):
                 'Origin': 'https://indiawris.gov.in', 'Referer': 'https://indiawris.gov.in/'
             }
         )
-        res = session.send(req.prepare(), timeout=15)
+        res = session.send(req.prepare(), timeout=8)
         print(f'WRIS GW STATUS: {res.status_code}')
         if res.status_code == 200:
             data = res.json()
             _cache_set(cache_key, data)
             return data
     except Exception as e:
-        print(f'WRIS GW API error: {e}')
+        print(f'WRIS GW unavailable: {e}')
     return None
 
 def fetch_weather(location, state='Tamil Nadu'):
@@ -461,7 +461,7 @@ def fetch_live_rainfall(district, start=None, end=None, size=20):
                 'accept': 'application/json', 'User-Agent': 'Mozilla/5.0',
                 'Origin': 'https://indiawris.gov.in', 'Referer': 'https://indiawris.gov.in/'
             },
-            timeout=15
+            timeout=8
         )
         print(f'WRIS RAINFALL STATUS: {res.status_code}')
         if res.status_code == 200:
@@ -469,16 +469,21 @@ def fetch_live_rainfall(district, start=None, end=None, size=20):
             _cache_set(cache_key, data)
             return data
     except Exception as e:
-        print(f'WRIS Rainfall API error: {e}')
+        print(f'WRIS Rainfall unavailable: {e}')
     return None
 
 # ── Chat Endpoint ──────────────────────────────────────────────────────────────
+@app.route('/chat', methods=['POST'])
 @app.route('/chat/', methods=['POST'])
 def chat():
-    data = request.json
-    query = data.get('query', '').strip()
-    answer = generate_answer(query)
-    return jsonify({'answer': answer})
+    try:
+        data = request.json
+        query = data.get('query', '').strip()
+        answer = generate_answer(query)
+        return jsonify({'answer': answer})
+    except Exception as e:
+        print(f'Chat error: {e}')
+        return jsonify({'answer': '⚠️ Something went wrong on the server. Please try again.'}), 200
 
 # Tamil Nadu districts — used for free regex-based location extraction
 _TN_DISTRICTS = [
@@ -635,7 +640,7 @@ def generate_answer(query):
     if location:
         weather = fetch_weather(location)
         live_gw = fetch_live_gw(location)
-        live_rainfall = fetch_live_rainfall(location)
+        live_rainfall = fetch_live_rainfall(location) if live_gw is not None else None
         log_weather(location, weather)
 
         # ── Build structured markdown from live data ──
