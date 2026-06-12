@@ -628,8 +628,19 @@ User Question: {query}
 
 Answer:"""
 
+_GW_KEYWORDS = ['groundwater','water level','well','aquifer','depth','mbgl','extraction','recharge','bore']
+_RAIN_KEYWORDS = ['rain','rainfall','precipitation']
+
+def is_gw_query(query):
+    q = query.lower()
+    return any(kw in q for kw in _GW_KEYWORDS)
+
+def is_rain_query(query):
+    q = query.lower()
+    return any(kw in q for kw in _RAIN_KEYWORDS)
+
 def generate_answer(query):
-    # ── State-level weather query (any Indian state) ──
+    # ── State-level weather query ──
     if is_weather_query(query):
         state = extract_state(query)
         if state:
@@ -641,19 +652,35 @@ def generate_answer(query):
         weather = None
         live_gw = None
         live_rainfall = None
-        try:
-            weather = fetch_weather(location)
-        except Exception as e:
-            print(f'Weather fetch failed: {e}')
-        try:
-            live_gw = fetch_live_gw(location)
-        except Exception as e:
-            print(f'GW fetch failed: {e}')
-        if live_gw is not None:
+
+        # ── Smart routing — only fetch what the query needs ──
+        fetch_gw = is_gw_query(query) or not is_weather_query(query)
+        fetch_weather_data = is_weather_query(query) or is_rain_query(query)
+
+        if fetch_gw:
             try:
-                live_rainfall = fetch_live_rainfall(location)
+                live_gw = fetch_live_gw(location)
             except Exception as e:
-                print(f'Rainfall fetch failed: {e}')
+                print(f'GW fetch failed: {e}')
+            if live_gw is not None:
+                try:
+                    live_rainfall = fetch_live_rainfall(location)
+                except Exception as e:
+                    print(f'Rainfall fetch failed: {e}')
+
+        if fetch_weather_data:
+            try:
+                weather = fetch_weather(location)
+            except Exception as e:
+                print(f'Weather fetch failed: {e}')
+
+        # always fetch weather if nothing else returned data
+        if weather is None and live_gw is None:
+            try:
+                weather = fetch_weather(location)
+            except Exception as e:
+                print(f'Fallback weather fetch failed: {e}')
+
         try:
             log_weather(location, weather)
         except:
