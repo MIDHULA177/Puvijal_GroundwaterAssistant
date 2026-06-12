@@ -126,6 +126,58 @@ def find_relevant_chunks(query, chunks, top_k=4):
 
 PDF_CHUNKS = load_pdf_chunks()
 
+# ── Train Random Forest once at startup ──────────────────────────────────────
+RF_MODEL = None
+RF_ROWS = []
+RF_X = []
+RF_LE = None
+
+def init_rf_model():
+    global RF_MODEL, RF_ROWS, RF_X, RF_LE
+    try:
+        from sklearn.ensemble import RandomForestRegressor
+        from sklearn.preprocessing import LabelEncoder
+        csv_path = os.path.join(os.path.dirname(__file__), '..', 'SIH Files', 'tamilnadu_groundwater.csv')
+        rows = []
+        with open(csv_path, newline='', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                rows.append(row)
+        def safe_float(v):
+            try: return float(v)
+            except: return 0.0
+        le = LabelEncoder()
+        le.fit([r['District'].title() for r in rows])
+        X = [[
+            le.transform([r['District'].title()])[0],
+            safe_float(r['Rainfall_mm']),
+            safe_float(r['Annual_GW_Recharge_ham']),
+            safe_float(r['Annual_Extractable_GW_ham']),
+            safe_float(r['GW_Extraction_Total_ham'])
+        ] for r in rows]
+        y = [safe_float(r['Stage_of_GW_Extraction_pct']) for r in rows]
+        rf = RandomForestRegressor(n_estimators=50, random_state=42, n_jobs=1)
+        rf.fit(X, y)
+        RF_MODEL, RF_ROWS, RF_X, RF_LE = rf, rows, X, le
+        print('✅ Random Forest model trained at startup')
+    except Exception as e:
+        print(f'❌ RF model init error: {e}')
+
+init_rf_model()
+
+# ── WRIS Cache (5 min TTL) ────────────────────────────────────────────────────
+_wris_cache = {}
+_WRIS_TTL = 300  # seconds
+
+def _cache_get(key):
+    entry = _wris_cache.get(key)
+    if entry and (datetime.utcnow() - entry['ts']).seconds < _WRIS_TTL:
+        return entry['data']
+    return None
+
+def _cache_set(key, data):
+    _wris_cache[key] = {'data': data, 'ts': datetime.utcnow()}
+
 app = Flask(__name__)
 CORS(app)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
@@ -203,6 +255,10 @@ def fetch_live_gw(location, start=None, end=None, size=20):
     today = datetime.utcnow()
     end = end or today.strftime('%Y-%m-%d')
     start = start or (today.replace(year=today.year - 1)).strftime('%Y-%m-%d')
+    cache_key = f'gw_{location.lower()}'
+    cached = _cache_get(cache_key)
+    if cached is not None:
+        return cached
     try:
         session = http_requests.Session()
         req = http_requests.Request(
@@ -219,9 +275,10 @@ def fetch_live_gw(location, start=None, end=None, size=20):
         )
         res = session.send(req.prepare(), timeout=15)
         print(f'WRIS GW STATUS: {res.status_code}')
-        print(f'WRIS GW BODY: {res.text[:500]}')
         if res.status_code == 200:
-            return res.json()
+            data = res.json()
+            _cache_set(cache_key, data)
+            return data
     except Exception as e:
         print(f'WRIS GW API error: {e}')
     return None
@@ -388,6 +445,10 @@ def fetch_live_rainfall(district, start=None, end=None, size=20):
     today = datetime.utcnow()
     end = end or today.strftime('%Y-%m-%d')
     start = start or (today.replace(year=today.year - 1)).strftime('%Y-%m-%d')
+    cache_key = f'rf_{district.lower()}'
+    cached = _cache_get(cache_key)
+    if cached is not None:
+        return cached
     try:
         res = http_requests.post(
             'https://indiawris.gov.in/Dataset/RainFall',
@@ -403,9 +464,10 @@ def fetch_live_rainfall(district, start=None, end=None, size=20):
             timeout=15
         )
         print(f'WRIS RAINFALL STATUS: {res.status_code}')
-        print(f'WRIS RAINFALL BODY: {res.text[:500]}')
         if res.status_code == 200:
-            return res.json()
+            data = res.json()
+            _cache_set(cache_key, data)
+            return data
     except Exception as e:
         print(f'WRIS Rainfall API error: {e}')
     return None
@@ -814,43 +876,17 @@ def rainfall_live():
 @app.route('/api/predictions', methods=['GET'])
 def get_predictions():
     try:
-        from sklearn.ensemble import RandomForestRegressor
-        from sklearn.preprocessing import LabelEncoder
-        import numpy as np
-
-        csv_path = os.path.join(os.path.dirname(__file__), '..', 'SIH Files', 'tamilnadu_groundwater.csv')
-        rows = []
-        with open(csv_path, newline='', encoding='utf-8') as f:
-            reader = csv.DictReader(f)
-            for row in reader:
-                rows.append(row)
-
-        districts = [r['District'].title() for r in rows]
-        le = LabelEncoder()
-        le.fit(districts)
-
+        if RF_MODEL is None:
+            return jsonify({'error': 'Model not ready'}), 503
         def safe_float(v):
             try: return float(v)
             except: return 0.0
-
-        X = [[
-            le.transform([r['District'].title()])[0],
-            safe_float(r['Rainfall_mm']),
-            safe_float(r['Annual_GW_Recharge_ham']),
-            safe_float(r['Annual_Extractable_GW_ham']),
-            safe_float(r['GW_Extraction_Total_ham'])
-        ] for r in rows]
-        y = [safe_float(r['Stage_of_GW_Extraction_pct']) for r in rows]
-
-        rf = RandomForestRegressor(n_estimators=200, random_state=42)
-        rf.fit(X, y)
-
         results = []
-        for i, r in enumerate(rows):
-            current = rf.predict([X[i]])[0]
-            X_future = X[i].copy()
+        for i, r in enumerate(RF_ROWS):
+            current = RF_MODEL.predict([RF_X[i]])[0]
+            X_future = RF_X[i].copy()
             X_future[4] *= 1.05
-            future = rf.predict([X_future])[0]
+            future = RF_MODEL.predict([X_future])[0]
             trend = 'Declining' if future > current else 'Stable'
             status = 'Over-Exploited' if current > 100 else ('Critical' if current > 90 else ('Semi-Critical' if current > 70 else 'Safe'))
             results.append({
