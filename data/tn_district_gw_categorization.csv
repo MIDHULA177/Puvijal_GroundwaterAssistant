@@ -1,0 +1,39 @@
+District,Category,Stage_of_GW_Extraction_pct,Annual_GW_Recharge_BCM,Annual_GW_Draft_BCM,Net_GW_Availability_BCM,No_of_Assessment_Units,Over_Exploited_Units,Critical_Units,Semi_Critical_Units,Safe_Units,Primary_Aquifer,Avg_Depth_to_Water_m,Pre_Monsoon_Depth_m,Post_Monsoon_Depth_m,Fluoride_Risk,Salinity_Risk,Nitrate_Risk,Major_Water_Source,Annual_Rainfall_mm,Irrigation_Dependency_pct,Key_Issue
+Chennai,Over-Exploited,121.7,0.06,0.073,0.0,3,3,0,0,0,Alluvial/Crystalline,8.2,10.1,6.3,Low,High,Medium,Groundwater+Surface,1400,45,Saltwater intrusion due to over-extraction and coastal proximity
+Coimbatore,Over-Exploited,105.3,0.38,0.40,0.0,38,22,6,4,6,Hard Rock/Crystalline,12.5,15.2,9.8,Low,Low,High,Groundwater,695,72,High agricultural and industrial demand exceeding recharge
+Tiruppur,Over-Exploited,112.4,0.21,0.236,0.0,28,18,5,3,2,Hard Rock/Crystalline,14.1,17.3,11.2,Low,Medium,High,Groundwater,695,68,Textile dyeing industry causing high extraction and contamination
+Vellore,Over-Exploited,103.8,0.29,0.301,0.0,20,12,4,2,2,Hard Rock/Crystalline,11.8,14.5,9.1,Medium,Low,Medium,Groundwater,920,65,Industrial effluents and high extraction depleting aquifers
+Krishnagiri,Over-Exploited,101.2,0.31,0.314,0.0,22,13,4,3,2,Hard Rock/Crystalline,13.2,16.1,10.4,Low,Low,Low,Groundwater,835,70,Intensive horticulture driving over-extraction
+Dharmapuri,Over-Exploited,108.6,0.28,0.304,0.0,18,11,3,2,2,Hard Rock/Crystalline,15.4,18.9,12.1,Low,Low,Low,Groundwater,835,74,Deep borewell proliferation for mango and banana cultivation
+Dindigul,Critical,92.4,0.33,0.305,0.028,25,8,7,5,5,Hard Rock/Crystalline,11.6,14.2,9.0,Low,Low,Medium,Groundwater,845,66,Declining levels due to paddy and banana irrigation demand
+Madurai,Critical,89.7,0.41,0.368,0.042,32,7,9,8,8,Hard Rock/Alluvial,9.8,12.4,7.6,Low,Medium,Medium,Groundwater+Surface,855,62,Urban expansion and paddy cultivation stressing aquifers
+Salem,Critical,94.1,0.44,0.414,0.026,35,10,8,9,8,Hard Rock/Crystalline,10.9,13.6,8.3,Low,Low,Low,Groundwater,915,64,Steel industry and paddy cultivation driving high extraction
+Erode,Critical,91.8,0.36,0.330,0.030,30,9,8,7,6,Hard Rock/Crystalline,11.2,13.9,8.7,Low,Low,Medium,Groundwater+Surface,758,67,Textile and sugarcane industries causing high groundwater use
+Namakkal,Critical,96.2,0.27,0.260,0.010,20,10,5,3,2,Hard Rock/Crystalline,13.5,16.8,10.5,Low,Low,Low,Groundwater,815,71,Poultry industry and intensive horticulture driving extraction
+Tiruchirappalli,Semi-Critical,74.3,0.52,0.386,0.134,40,4,6,12,18,Hard Rock/Alluvial,8.6,11.2,6.4,Low,Medium,Medium,Surface+Groundwater,915,58,Cauvery basin dependence; urban growth increasing demand
+Kancheepuram,Semi-Critical,71.8,0.38,0.273,0.107,28,3,5,10,10,Alluvial/Hard Rock,9.4,12.1,7.1,Low,Medium,High,Surface+Groundwater,1270,55,Periurban Chennai expansion and industrial zones
+Tiruvallur,Semi-Critical,76.4,0.45,0.344,0.106,32,5,7,9,11,Alluvial/Hard Rock,10.2,13.0,7.8,Low,Medium,Medium,Surface+Groundwater,1180,52,Chennai metro expansion and industrial corridors
+Tiruvannamalai,Semi-Critical,78.9,0.34,0.268,0.072,26,5,6,8,7,Hard Rock/Crystalline,12.4,15.6,9.5,Medium,Low,Low,Groundwater,905,68,Granite quarrying and paddy cultivation impacting levels
+Cuddalore,Semi-Critical,72.1,0.48,0.346,0.134,35,4,6,11,14,Alluvial/Sedimentary,7.8,10.4,5.8,Low,High,Medium,Surface+Groundwater,1325,56,Coastal industrial zone; salinity intrusion risk
+Villupuram,Semi-Critical,69.4,0.51,0.354,0.156,38,3,5,12,18,Hard Rock/Alluvial,9.1,11.8,6.9,Low,Low,Low,Surface+Groundwater,1070,54,Paddy cultivation dependent on northeast monsoon
+Ranipet,Semi-Critical,75.6,0.22,0.166,0.054,16,4,5,4,3,Hard Rock/Alluvial,10.8,13.5,8.2,High,Low,High,Groundwater,920,60,Tannery effluents causing chromium and chemical contamination
+Karur,Semi-Critical,77.2,0.24,0.185,0.055,18,4,5,5,4,Hard Rock/Crystalline,10.5,13.1,8.0,Low,Low,Medium,Surface+Groundwater,858,63,Handloom textile industry and paddy dual pressure
+Perambalur,Semi-Critical,73.8,0.18,0.133,0.047,12,3,4,3,2,Hard Rock/Crystalline,11.9,14.8,9.3,Low,Low,Low,Groundwater,875,66,Limestone quarrying affecting aquifer integrity
+Ariyalur,Safe,58.4,0.24,0.140,0.100,16,1,3,5,7,Sedimentary/Alluvial,8.4,11.0,6.2,Low,Low,Low,Surface+Groundwater,950,51,Cement industry; generally adequate recharge from northeast monsoon
+Thanjavur,Safe,52.3,0.68,0.356,0.324,48,0,2,10,36,Alluvial/Deltaic,6.2,8.8,4.4,Low,Medium,Medium,Surface+Groundwater,990,48,Delta region; good recharge from Cauvery; salinity in coastal parts
+Tiruvarur,Safe,48.7,0.54,0.263,0.277,38,0,1,8,29,Deltaic/Alluvial,5.8,8.2,4.0,Low,High,Low,Surface+Groundwater,1050,46,Cauvery delta; coastal salinity in eastern blocks
+Nagapattinam,Safe,51.2,0.46,0.235,0.225,32,0,2,7,23,Deltaic/Alluvial,6.4,9.0,4.6,Low,High,Low,Surface+Groundwater,1200,47,Coastal district; tsunami-affected aquifers; saline intrusion risk
+Pudukkottai,Safe,55.8,0.38,0.212,0.168,28,1,2,8,17,Hard Rock/Crystalline,9.6,12.4,7.2,Medium,Low,Low,Groundwater+Surface,875,55,Rocky terrain limits recharge; dependent on tank irrigation
+Sivaganga,Safe,54.1,0.32,0.173,0.147,24,1,2,6,15,Hard Rock/Crystalline,9.2,11.9,6.8,Low,Medium,Low,Groundwater+Surface,920,54,Canal irrigation from Vaigai supplementing groundwater
+Virudhunagar,Safe,61.4,0.29,0.178,0.112,22,2,3,6,11,Hard Rock/Crystalline,10.4,13.2,8.0,Low,Medium,Low,Groundwater+Surface,745,58,Fireworks industry; moderate agricultural extraction
+Ramanathapuram,Safe,45.6,0.28,0.128,0.152,20,0,1,5,14,Hard Rock/Sedimentary,7.8,10.5,5.6,Medium,High,Low,Groundwater+Surface,780,50,Coastal district; salinity major concern; low rainfall
+Thoothukudi,Safe,49.3,0.31,0.153,0.157,22,1,1,6,14,Hard Rock/Sedimentary,8.6,11.4,6.2,Low,High,Low,Surface+Groundwater,680,49,Salt pan industry; coastal salinity; port city industrial use
+Tirunelveli,Safe,46.8,0.48,0.225,0.255,34,0,1,8,25,Hard Rock/Alluvial,7.4,10.0,5.4,Low,Low,Low,Surface+Groundwater,780,46,Tamirabarani river basin provides good recharge
+Tenkasi,Safe,38.2,0.42,0.161,0.259,28,0,0,5,23,Hard Rock/Alluvial,6.8,9.2,4.8,Low,Low,Low,Surface+Groundwater,1250,42,Western Ghats proximity ensures good recharge; forested catchments
+Theni,Safe,44.5,0.35,0.156,0.194,24,0,1,6,17,Hard Rock/Alluvial,8.2,10.8,6.0,Low,Low,Low,Surface+Groundwater,1050,50,Vaigai headwaters; perennial streams support recharge
+Kallakurichi,Safe,56.3,0.31,0.175,0.135,22,1,2,7,12,Hard Rock/Alluvial,9.8,12.5,7.4,Low,Low,Low,Surface+Groundwater,1020,57,Bifurcated from Villupuram; agricultural district with good tank network
+Chengalpattu,Semi-Critical,70.2,0.40,0.281,0.119,30,3,6,9,12,Alluvial/Hard Rock,9.6,12.3,7.3,Low,Medium,High,Surface+Groundwater,1250,54,IT corridor and suburban Chennai growth driving demand
+Tirupathur,Semi-Critical,79.4,0.19,0.151,0.039,14,5,3,3,3,Hard Rock/Crystalline,13.8,17.1,10.8,Medium,Low,Low,Groundwater,920,69,New district from Vellore; hard rock terrain limits recharge
+Mayiladuthurai,Safe,50.8,0.38,0.193,0.187,26,0,1,7,18,Deltaic/Alluvial,6.6,9.1,4.5,Low,Medium,Low,Surface+Groundwater,1150,48,Cauvery delta district; good agricultural recharge
+The Nilgiris,Safe,22.4,0.58,0.130,0.450,18,0,0,1,17,Hard Rock/Alluvial,4.2,5.8,3.1,Low,Low,Low,Surface+Groundwater,1800,28,High rainfall from southwest monsoon; forest cover ensures recharge
+Kanyakumari,Safe,31.8,0.44,0.140,0.300,20,0,0,3,17,Hard Rock/Alluvial,5.4,7.2,3.8,Low,Low,Low,Surface+Groundwater,1650,35,Tri-sea junction; high rainfall; lowest extraction stage in TN
