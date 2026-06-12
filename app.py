@@ -960,5 +960,5 @@ def start_background_logger():
     print('✅ Background weather logger started (every 24h for all 38 TN districts)')
 
 if __name__ == '__main__':
-    start_background_logger()
+    # start_background_logger()  # disabled on free tier to save RAM
     app.run(port=8000, debug=True)
