@@ -273,7 +273,7 @@ def fetch_live_gw(location, start=None, end=None, size=20):
                 'Origin': 'https://indiawris.gov.in', 'Referer': 'https://indiawris.gov.in/'
             }
         )
-        res = session.send(req.prepare(), timeout=8)
+        res = session.send(req.prepare(), timeout=6)
         print(f'WRIS GW STATUS: {res.status_code}')
         if res.status_code == 200:
             data = res.json()
@@ -461,7 +461,7 @@ def fetch_live_rainfall(district, start=None, end=None, size=20):
                 'accept': 'application/json', 'User-Agent': 'Mozilla/5.0',
                 'Origin': 'https://indiawris.gov.in', 'Referer': 'https://indiawris.gov.in/'
             },
-            timeout=8
+            timeout=6
         )
         print(f'WRIS RAINFALL STATUS: {res.status_code}')
         if res.status_code == 200:
@@ -638,8 +638,12 @@ def generate_answer(query):
     location = extract_location(query)
 
     if location:
-        weather = fetch_weather(location)
-        live_gw = fetch_live_gw(location)
+        from concurrent.futures import ThreadPoolExecutor, as_completed
+        with ThreadPoolExecutor(max_workers=2) as executor:
+            gw_future = executor.submit(fetch_live_gw, location)
+            weather_future = executor.submit(fetch_weather, location)
+            live_gw = gw_future.result()
+            weather = weather_future.result()
         live_rainfall = fetch_live_rainfall(location) if live_gw is not None else None
         log_weather(location, weather)
 
