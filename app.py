@@ -638,14 +638,26 @@ def generate_answer(query):
     location = extract_location(query)
 
     if location:
-        from concurrent.futures import ThreadPoolExecutor, as_completed
-        with ThreadPoolExecutor(max_workers=2) as executor:
-            gw_future = executor.submit(fetch_live_gw, location)
-            weather_future = executor.submit(fetch_weather, location)
-            live_gw = gw_future.result()
-            weather = weather_future.result()
-        live_rainfall = fetch_live_rainfall(location) if live_gw is not None else None
-        log_weather(location, weather)
+        weather = None
+        live_gw = None
+        live_rainfall = None
+        try:
+            weather = fetch_weather(location)
+        except Exception as e:
+            print(f'Weather fetch failed: {e}')
+        try:
+            live_gw = fetch_live_gw(location)
+        except Exception as e:
+            print(f'GW fetch failed: {e}')
+        if live_gw is not None:
+            try:
+                live_rainfall = fetch_live_rainfall(location)
+            except Exception as e:
+                print(f'Rainfall fetch failed: {e}')
+        try:
+            log_weather(location, weather)
+        except:
+            pass
 
         # ── Build structured markdown from live data ──
         weather_md = ''
@@ -698,11 +710,11 @@ def generate_answer(query):
         return base
 
     # ── No location found — use PDF context + single Gemini call ──
-    relevant_chunks = find_relevant_chunks(query, PDF_CHUNKS, top_k=5)
+    relevant_chunks = find_relevant_chunks(query, PDF_CHUNKS, top_k=3)
     pdf_section = ''
     if relevant_chunks:
-        pdf_parts = [f'[{c["source"]} p.{c["page"]}] {c["text"][:600]}' for c in relevant_chunks]
-        pdf_section = '\n\nReference Documents (relevant excerpts):\n' + '\n\n'.join(pdf_parts)
+        pdf_parts = [f'[{c["source"]} p.{c["page"]}] {c["text"][:400]}' for c in relevant_chunks]
+        pdf_section = '\n\nReference Documents:\n' + '\n\n'.join(pdf_parts)
 
     # ── Inject categorization summary for general queries ──
     cat_summary_lines = []
