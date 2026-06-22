@@ -954,6 +954,11 @@ def get_predictions():
         print(f'Predictions error: {e}')
         return jsonify({'error': str(e)}), 500
 
+@app.route('/health', methods=['GET'])
+def health():
+    return jsonify({'status': 'ok'}), 200
+
+@app.route('/analysis', methods=['POST'])
 @app.route('/analysis/', methods=['POST'])
 def analysis():
     data = request.json
